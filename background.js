@@ -1,24 +1,28 @@
+var storage = chrome.storage.local
+
 chrome.extension.onMessage.addListener(
   function (request, sender) {
     var url = sender.tab.url
-    if (needsCulling(url)) {
-      chrome.history.search({text: url, maxResults: 1}, function(data) {
-        var item = data.pop().url
-        chrome.history.deleteUrl({"url": item}, function() {
-        })
-      })
-      insertUrl()
-    }
+    cull(url)
 })
 
-var needsCulling = function (url) {
-  var cullMe = ["reddit.com", "imgur.com"]
-  for (var i = 0; i < cullMe.length; i++) {
-    if (url.indexOf(cullMe[i]) >= 0) {
-      return true
+var cull = function (url) {
+  storage.get('blackList', function(items) {
+    // To avoid checking items.css we could specify storage.get({css: ''}) to
+    // return a default value of '' if there is no css value yet.
+    if (items.blackList) {
+      var cullMe = String(items.blackList);
+      if (url.indexOf(cullMe) >= 0) {
+        alert('REMOVED ' + url)
+        chrome.tabs.query( {active:true}, function(tabs) {
+          alert(tabs[0].url)
+          chrome.history.deleteUrl({ url: tabs[0].url }, function() {
+            alert('team?')
+          });
+        });
+      }
     }
-  }
-  return false
+  });
 }
 
 var insertUrl = function (keywords) {
@@ -26,13 +30,13 @@ var insertUrl = function (keywords) {
   chrome.history.addUrl({"url": urlToInsert})
 }
 
-$.ajax({
-   url: "http://api.wordnik.com//v4/word.json/cat/definitions?api_key=mykey&includeRelated=false&includeTags=false&limit=1",
-   dataType : 'json',
-   success: function (data) {
-     console.log(data[0].word)
-   },
-   error: function (e) {
-     console.log(e.message)
-   }
-});
+// $.ajax({
+//    url: "http://api.wordnik.com//v4/word.json/cat/definitions?api_key=mykey&includeRelated=false&includeTags=false&limit=1",
+//    dataType : 'json',
+//    success: function (data) {
+//      console.log(data[0].word)
+//    },
+//    error: function (e) {
+//      console.log(e.message)
+//    }
+// });
