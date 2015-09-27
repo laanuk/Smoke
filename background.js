@@ -13,11 +13,8 @@ var cull = function (url) {
     if (items.blackList) {
       var cullMe = String(items.blackList);
       if (url.indexOf(cullMe) >= 0) {
-        alert('REMOVED ' + url)
         chrome.tabs.query( {active:true}, function(tabs) {
-          alert(tabs[0].url)
           chrome.history.deleteUrl({ url: tabs[0].url }, function() {
-            alert('team?')
           });
         });
       }
