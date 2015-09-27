@@ -6,7 +6,7 @@
   "history"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js", "jquery.min.js"]
   },
   "content_scripts": [
     {

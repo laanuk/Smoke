@@ -7,18 +7,32 @@ chrome.extension.onMessage.addListener(
         chrome.history.deleteUrl({"url": item}, function() {
         })
       })
+      insertUrl()
     }
 })
 
 var needsCulling = function (url) {
-  console.log("url " + url)
   var cullMe = ["reddit.com", "imgur.com"]
   for (var i = 0; i < cullMe.length; i++) {
     if (url.indexOf(cullMe[i]) >= 0) {
-      console.log("cull " + url)
       return true
     }
   }
-  console.log("gucci " + url)
   return false
 }
+
+var insertUrl = function (keywords) {
+  var urlToInsert = "http://www.google.com/search?q=my+keywords+for+search&btnI"
+  chrome.history.addUrl({"url": urlToInsert})
+}
+
+$.ajax({
+   url: "http://api.wordnik.com//v4/word.json/cat/definitions?api_key=mykey&includeRelated=false&includeTags=false&limit=1",
+   dataType : 'json',
+   success: function (data) {
+     console.log(data[0].word)
+   },
+   error: function (e) {
+     console.log(e.message)
+   }
+});
