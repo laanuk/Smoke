@@ -1,1 +1,1 @@
-alert('in the extension')
+

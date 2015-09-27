@@ -1,7 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "My Cool Extension",
+  "name": "Smoke",
   "version": "0.1",
+  "permissions": [
+  "history"
+  ],
   "background": {
     "scripts": ["background.js"]
   },
